@@ -40,7 +40,7 @@ public abstract class Tile {
     public static final class EmptyTile extends Tile {
 
         //konstruktor pustego kwadracika szachownicy
-        EmptyTile(final int coordinate) {
+        private EmptyTile(final int coordinate) {
             super(coordinate);
         }
 
@@ -64,7 +64,7 @@ public abstract class Tile {
         private final Piece pieceOnTile;
 
         //konstruktor zajętego elementu przez figure
-        OccupiedTile(int tileCoordinate, Piece pieceOnTile) {
+        private OccupiedTile(int tileCoordinate, Piece pieceOnTile) {
             super(tileCoordinate);
             this.pieceOnTile = pieceOnTile;
         }
