@@ -10,7 +10,7 @@ import java.util.Map;
 public abstract class Tile {
 
     protected final int tileCoordinate; //koordynaty kwadracika
-    private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPosibleEmptyTyiles(); //mapa przechowująca id oraz pusty kwadracik
+    private static final Map<Integer, EmptyTile> EMPTY_TILES_CACHE = createAllPosibleEmptyTyiles(); //mapa przechowująca id oraz pusty kwadracik
 
     //przypisuje do mapy id oraz pusty element
     private static Map<Integer, EmptyTile> createAllPosibleEmptyTyiles() {
@@ -25,7 +25,7 @@ public abstract class Tile {
 
     //tworzymy kwadracik
     private static Tile createTile(final int tileCoordinate, final Piece piece) {
-        return piece != null ? new OccupiedTile(tileCoordinate, piece) : EMPTY_TILES.get(tileCoordinate);
+        return piece != null ? new OccupiedTile(tileCoordinate, piece) : EMPTY_TILES_CACHE.get(tileCoordinate);
     }
 
     //konstruktor kwadracika szachownicy
