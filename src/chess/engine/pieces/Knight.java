@@ -2,11 +2,13 @@ package chess.engine.pieces;
 
 import chess.engine.Alliance;
 import chess.engine.board.Board;
+import chess.engine.board.BoardUtils;
 import chess.engine.board.Move;
 import chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Knight extends Piece{ // klasa implementująca metody poruszania się figury
@@ -18,17 +20,24 @@ public class Knight extends Piece{ // klasa implementująca metody poruszania si
     }
 
     @Override
-    public List<Move> calculateLegalMoves(Board board) {
+    public Collection<Move> calculateLegalMoves(Board board) {
 
-        int candidateDestinationCoordinate;
         final List<Move> legalMoves = new ArrayList<>();
 
-        for(final int currentCandidate : CANDIDATE_MOVE_COORDINATES) // pętla po możliwych położeniach figury na planszy
+        for(final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATES) // pętla po wszystkich możliwych położeniach figury na planszy
         {
-            candidateDestinationCoordinate = this.piecePosition + currentCandidate; // do aktualnej pozycji dodawane jest przesunięcie
+            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset; // do aktualnej pozycji dodawane jest przesunięcie
 
-            if(true /* isValidTileCoordinate */) // jeśli dane położenie na planszy jest dozwolone...
+            if(BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) // jeśli dane położenie na planszy jest dozwolone...
             {
+                // jeżeli figura znajdzie się w granicznych kolumnach, to ograniczy możliwość ruchów do wykonania
+                if(isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                    isSecondColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                    isSeventhColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                    isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
+                        continue;
+                }
+
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
 
                 if(!candidateDestinationTile.isTileOccupied()) // jeśli dane miejsce nie jest zajęte...
@@ -50,4 +59,26 @@ public class Knight extends Piece{ // klasa implementująca metody poruszania si
 
         return ImmutableList.copyOf(legalMoves); // jako wynik zwracamy listę dozwolonych ruchów
     }
+
+    //Ograniczenia ruchów figury na granicznych kolumnach
+    private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
+        // zwraca dozwolone ruchy dla pierwszej kolumny
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -17 || candidateOffset == -10 || candidateOffset == 6 || candidateOffset == 15);
+    }
+
+    private static boolean isSecondColumnExclusion(final int currentPosition, final int candidateOffset) {
+        // zwraca dozwolone ruchy dla drugiej kolumny
+        return BoardUtils.SECOND_COLUMN[currentPosition] && (candidateOffset == -10 || candidateOffset == 6);
+    }
+
+    private static boolean isSeventhColumnExclusion(final int currentPosition, final int candidateOffset) {
+        // zwraca dozwolone ruchy dla siódmej kolumny
+        return BoardUtils.SEVENTH_COLUMN[currentPosition] && (candidateOffset == -6 || candidateOffset == 10);
+    }
+
+    private static boolean isEighthColumnExclusion(final int currentPosition, final int candidateOffset) {
+        // zwraca dozwolone ruchy dla ósmej kolumny
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && (candidateOffset == -15 || candidateOffset == -6 || candidateOffset == 10 || candidateOffset == 17);
+    }
+
 }
