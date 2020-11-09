@@ -38,7 +38,9 @@ public class Bishop extends Piece {
 
                     if(!candidateDestinationTile.isTileOccupied()) // jeśli dane miejsce nie jest zajęte...
                     {
-                        legalMoves.add(new Move()); // ...dodajemy ten ruch do listy możliwych ruchów (nieatakujący)
+                        // ...dodajemy ten ruch do listy możliwych ruchów (nieatakujący)
+                        // tworzymy nowy ruch, który przyjmuje w argumentach szachownice, własną figurę oraz docelowe koordynaty
+                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
                     }
                     else // jeśli jednak dane miejsce jest zajęte...
                     {
@@ -47,7 +49,9 @@ public class Bishop extends Piece {
 
                         if(this.pieceAlliance != pieceAlliance)
                         {
-                            legalMoves.add(new Move()); // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
+                            // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
+                            // tworzymy nowy ruch atakujący, który przujmuje w argumentach szachownice, własną firugę, docelowe koordynaty oraz atakowaną figurę stojącą na docelowych koordynatach
+                            legalMoves.add(new Move.AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }
