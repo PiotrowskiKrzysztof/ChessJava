@@ -16,7 +16,7 @@ public abstract class Tile {
     private static Map<Integer, EmptyTile> createAllPosibleEmptyTyiles() {
 
         final Map<Integer, EmptyTile> emptyTileMap = new HashMap<>();
-        for(int i = 0; i < 64; i++) {
+        for(int i = 0; i < BoardUtils.NUM_TILES; i++) {
             emptyTileMap.put(i, new EmptyTile(i));
         }
         //immutableMap (z biblioteki guava od google) powoduje, że mapa nigdy się nie zmieni
@@ -29,7 +29,7 @@ public abstract class Tile {
     }
 
     //konstruktor kwadracika szachownicy
-    private Tile(int tileCoordinate) {
+    private Tile(final int tileCoordinate) {
         this.tileCoordinate = tileCoordinate;
     }
 
@@ -64,7 +64,7 @@ public abstract class Tile {
         private final Piece pieceOnTile;
 
         //konstruktor zajętego elementu przez figure
-        private OccupiedTile(int tileCoordinate, Piece pieceOnTile) {
+        private OccupiedTile(int tileCoordinate, final Piece pieceOnTile) {
             super(tileCoordinate);
             this.pieceOnTile = pieceOnTile;
         }

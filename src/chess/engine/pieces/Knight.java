@@ -4,12 +4,15 @@ import chess.engine.Alliance;
 import chess.engine.board.Board;
 import chess.engine.board.BoardUtils;
 import chess.engine.board.Move;
+import chess.engine.board.Move.MajorMove;
 import chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static chess.engine.board.Move.*;
 
 public class Knight extends Piece{ // klasa implementująca metody poruszania się figury
 
@@ -20,7 +23,7 @@ public class Knight extends Piece{ // klasa implementująca metody poruszania si
     }
 
     @Override
-    public Collection<Move> calculateLegalMoves(Board board) {
+    public Collection<Move> calculateLegalMoves(final Board board) {
 
         final List<Move> legalMoves = new ArrayList<>();
 
@@ -42,7 +45,9 @@ public class Knight extends Piece{ // klasa implementująca metody poruszania si
 
                 if(!candidateDestinationTile.isTileOccupied()) // jeśli dane miejsce nie jest zajęte...
                 {
-                    legalMoves.add(new Move()); // ...dodajemy ten ruch do listy możliwych ruchów (nieatakujący)
+                    // ...dodajemy ten ruch do listy możliwych ruchów (nieatakujący)
+                    // tworzymy nowy ruch, który przyjmuje w argumentach szachownice, własną figurę oraz docelowe koordynaty
+                    legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                 }
                 else // jeśli jednak dane miejsce jest zajęte...
                 {
@@ -51,7 +56,9 @@ public class Knight extends Piece{ // klasa implementująca metody poruszania si
 
                     if(this.pieceAlliance != pieceAlliance)
                     {
-                        legalMoves.add(new Move()); // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
+                        // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
+                        // tworzymy nowy ruch atakujący, który przujmuje w argumentach szachownice, własną firugę, docelowe koordynaty oraz atakowaną figurę stojącą na docelowych koordynatach
+                        legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                     }
                 }
             }
