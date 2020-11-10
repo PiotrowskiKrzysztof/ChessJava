@@ -11,13 +11,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static chess.engine.board.Move.*;
+public class Rook extends Piece {
 
-public class Bishop extends Piece {
+    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-8, -1, 1, 8}; // pozycje planszy na których może pojawić się figura
 
-    private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -7, 7, 9}; // pozycje planszy na których może pojawić się figura
-
-    Bishop(int piecePosition, Alliance pieceAlliance) {
+    Rook(int piecePosition, Alliance pieceAlliance) {
         super(piecePosition, pieceAlliance);
     }
 
@@ -42,7 +40,7 @@ public class Bishop extends Piece {
                     {
                         // ...dodajemy ten ruch do listy możliwych ruchów (nieatakujący)
                         // tworzymy nowy ruch, który przyjmuje w argumentach szachownice, własną figurę oraz docelowe koordynaty
-                        legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                        legalMoves.add(new Move.MajorMove(board, this, candidateDestinationCoordinate));
                     }
                     else // jeśli jednak dane miejsce jest zajęte...
                     {
@@ -53,7 +51,7 @@ public class Bishop extends Piece {
                         {
                             // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
                             // tworzymy nowy ruch atakujący, który przujmuje w argumentach szachownice, własną firugę, docelowe koordynaty oraz atakowaną figurę stojącą na docelowych koordynatach
-                            legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new Move.AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }
@@ -65,11 +63,11 @@ public class Bishop extends Piece {
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset)
     {
-        return BoardUtils.FIRST_COLUMN[currentPosition] && candidateOffset == -9 || candidateOffset == 7;
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -1);
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition, final int candidateOffset)
     {
-        return BoardUtils.EIGHTH_COLUMN[currentPosition] && candidateOffset == -7 || candidateOffset == 9;
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && (candidateOffset == 1);
     }
 }
