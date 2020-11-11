@@ -13,7 +13,7 @@ import java.util.List;
 
 import static chess.engine.board.Move.*;
 
-public class Bishop extends Piece {
+public class Bishop extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ GOŃCA
 
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -7, 7, 9}; // pozycje planszy na których może pojawić się figura
 

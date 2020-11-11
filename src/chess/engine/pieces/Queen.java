@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class Queen extends Piece {
+public class Queen extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ HETMANA / KRÓLOWEJ
 
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -8, -7, -1, 1, 7, 8, 9}; // pozycje planszy na których może pojawić się figura
 
