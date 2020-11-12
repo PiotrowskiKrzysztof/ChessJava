@@ -69,22 +69,22 @@ public class Knight extends Piece{ // KLASA REPREZENTUJĄCA FIGURĘ SKOCZKA
 
     //Ograniczenia ruchów figury na granicznych kolumnach
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
-        // zwraca dozwolone ruchy dla pierwszej kolumny
+        // wyklucza ruchy figury w 1 kolumnie
         return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -17 || candidateOffset == -10 || candidateOffset == 6 || candidateOffset == 15);
     }
 
     private static boolean isSecondColumnExclusion(final int currentPosition, final int candidateOffset) {
-        // zwraca dozwolone ruchy dla drugiej kolumny
+        // wyklucza ruchy figury w 2 kolumnie
         return BoardUtils.SECOND_COLUMN[currentPosition] && (candidateOffset == -10 || candidateOffset == 6);
     }
 
     private static boolean isSeventhColumnExclusion(final int currentPosition, final int candidateOffset) {
-        // zwraca dozwolone ruchy dla siódmej kolumny
+        // wyklucza ruchy figury w 7 kolumnie
         return BoardUtils.SEVENTH_COLUMN[currentPosition] && (candidateOffset == -6 || candidateOffset == 10);
     }
 
     private static boolean isEighthColumnExclusion(final int currentPosition, final int candidateOffset) {
-        // zwraca dozwolone ruchy dla ósmej kolumny
+        // wyklucza ruchy figury w 8 kolumnie
         return BoardUtils.EIGHTH_COLUMN[currentPosition] && (candidateOffset == -15 || candidateOffset == -6 || candidateOffset == 10 || candidateOffset == 17);
     }
 
