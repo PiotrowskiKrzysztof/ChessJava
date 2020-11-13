@@ -67,6 +67,11 @@ public class Knight extends Piece{ // KLASA REPREZENTUJĄCA FIGURĘ SKOCZKA
         return ImmutableList.copyOf(legalMoves); // jako wynik zwracamy listę dozwolonych ruchów
     }
 
+    @Override
+    public String toString() {
+        return PieceType.KNIGHT.toString();
+    }
+
     //Ograniczenia ruchów figury na granicznych kolumnach
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
         // wyklucza ruchy figury w 1 kolumnie

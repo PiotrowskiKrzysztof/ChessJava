@@ -62,6 +62,11 @@ public class Queen extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ HETMANA / KR
         return ImmutableList.copyOf(legalMoves);
     }
 
+    @Override
+    public String toString() {
+        return PieceType.QUEEN.toString();
+    }
+
     //Ograniczenia ruchów figury na granicznych kolumnach
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset)
     {

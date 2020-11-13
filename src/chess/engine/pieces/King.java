@@ -62,6 +62,11 @@ public class King extends Piece{
         return ImmutableList.copyOf(legalMoves);
     }
 
+    @Override
+    public String toString() {
+        return PieceType.KING.toString();
+    }
+
     //Ograniczenia ruchów figury na granicznych kolumnach
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
         // wyklucza ruchy figury w 1 kolumnie

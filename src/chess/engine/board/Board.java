@@ -4,10 +4,7 @@ import chess.engine.Alliance;
 import chess.engine.pieces.*;
 import com.google.common.collect.ImmutableList;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Board {
 
@@ -20,9 +17,36 @@ public class Board {
         this.gameBoard = createGameBoard(builder);
         this.whitePieces = calculateActivePieces(this.gameBoard, Alliance.WHITE);
         this.blackPieces = calculateActivePieces(this.gameBoard, Alliance.BLACK);
+
+        final Collection<Move> whiteStandardLegalMoves = calculateLegalMoves(this.whitePieces);
+        final Collection<Move> blackStandardLegalMoves = calculateLegalMoves(this.blackPieces);
     }
 
-    private Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
+    @Override
+    public String toString() { // nadpisujemy metodę toString do wyświetlania Board
+        final StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < BoardUtils.NUM_TILES; i++)
+        {
+            final String tileText = this.gameBoard.get(i).toString();
+            builder.append(String.format("%3s", tileText));
+            if((i+1) % BoardUtils.NUM_TILES_PER_ROW == 0)
+            {
+                builder.append("\n");
+            }
+        }
+        return builder.toString();
+    }
+
+    private Collection<Move> calculateLegalMoves(final Collection<Piece> pieces) { // sprawdzamy legalMoves dla kolekcji elementów
+        final List<Move> legalMoves = new ArrayList<>();
+        for(final Piece piece : pieces)
+        {
+            legalMoves.addAll(piece.calculateLegalMoves(this));
+        }
+        return ImmutableList.copyOf(legalMoves);
+    }
+
+    private static Collection<Piece> calculateActivePieces(final List<Tile> gameBoard, final Alliance alliance) {
         final List<Piece> activePieces = new ArrayList<>();
         for(final Tile tile : gameBoard)
         {
@@ -105,6 +129,7 @@ public class Board {
         Alliance nextMoveMaker;
 
         public Builder() {
+            this.boardConfig = new HashMap<>();
 
         }
 

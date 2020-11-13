@@ -44,6 +44,13 @@ public abstract class Tile {
             super(coordinate);
         }
 
+        //metoda toString
+        @Override
+        public String toString()
+        {
+            return "-"; // dla pustego miejsca zwracamy "-"
+        }
+
         //ustawia wartość fals na pustym kwadraciku
         @Override
         public boolean isTileOccupied() {
@@ -67,6 +74,14 @@ public abstract class Tile {
         private OccupiedTile(int tileCoordinate, final Piece pieceOnTile) {
             super(tileCoordinate);
             this.pieceOnTile = pieceOnTile;
+        }
+
+        //mteoda toString
+        @Override
+        public String toString()
+        {
+            return getPiece().getPieceAlliance().isBlack() ? getPiece().toString().toLowerCase() :
+                    getPiece().toString();
         }
 
         //ustawia wartość true na zajętym kwadraciku

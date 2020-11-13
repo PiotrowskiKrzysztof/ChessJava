@@ -34,4 +34,26 @@ public abstract class Piece {
 
     public abstract Collection<Move> calculateLegalMoves(final Board board); // zwracamy zbiór możliwych (prawidłowych) ruchów elementu
 
+    public enum PieceType // enum, wyliczamy figury po ich nazwach w celu ulepszenia wyświetlania metodą toString
+    {
+        PAWN("P"), // każdej z figur przyznajemy "nazwę"
+        KNIGHT("N"),
+        BISHOP("B"),
+        ROOK("R"),
+        QUEEN("Q"),
+        KING("K");
+
+        private String pieceName;
+
+        PieceType(final String pieceName)
+        {
+            this.pieceName = pieceName;
+        }
+
+        @Override
+        public String toString() {
+            return this.pieceName; // w metodzie toString zwracamy "nazwę" figury
+        }
+    }
+
 }

@@ -78,4 +78,9 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
 
         return ImmutableList.copyOf(legalMoves);
     }
+
+    @Override
+    public String toString() {
+        return PieceType.PAWN.toString();
+    }
 }

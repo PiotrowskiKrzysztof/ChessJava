@@ -63,6 +63,11 @@ public class Bishop extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ GOŃCA
         return ImmutableList.copyOf(legalMoves);
     }
 
+    @Override
+    public String toString() {
+        return PieceType.BISHOP.toString();
+    }
+
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset)
     {
         return BoardUtils.FIRST_COLUMN[currentPosition] && candidateOffset == -9 || candidateOffset == 7;
