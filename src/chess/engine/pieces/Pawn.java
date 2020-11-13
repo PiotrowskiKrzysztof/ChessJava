@@ -16,7 +16,7 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
 
     private final static int[] CANDIDATE_MOVE_COORDINATE = {8, 16, 7, 9}; // 8 pól w szachownicy to jedno miejsce wyżej nad pionkiem
 
-    Pawn(final int piecePosition, final Alliance pieceAlliance) {
+    public Pawn(final Alliance pieceAlliance, final int piecePosition) {
         super(piecePosition, pieceAlliance);
     }
 

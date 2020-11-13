@@ -15,7 +15,7 @@ public class Queen extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ HETMANA / KR
 
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -8, -7, -1, 1, 7, 8, 9}; // pozycje planszy na których może pojawić się figura
 
-    Queen(int piecePosition, Alliance pieceAlliance) {
+    public Queen(Alliance pieceAlliance, int piecePosition) {
         super(piecePosition, pieceAlliance);
     }
 

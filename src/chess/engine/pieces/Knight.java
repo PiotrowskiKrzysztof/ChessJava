@@ -18,7 +18,7 @@ public class Knight extends Piece{ // KLASA REPREZENTUJĄCA FIGURĘ SKOCZKA
 
     private final static int[] CANDIDATE_MOVE_COORDINATES = {-17, -15, -10, -6, 6, 10, 15, 17}; // pozycje planszy na których może pojawić się figura
 
-    Knight(final int piecePosition, final Alliance pieceAlliance) {
+    public Knight(final Alliance pieceAlliance, final int piecePosition) {
         super(piecePosition, pieceAlliance);
     }
 
