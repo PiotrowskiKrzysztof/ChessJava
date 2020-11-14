@@ -16,7 +16,7 @@ public class Rook extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ WIEŻY
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-8, -1, 1, 8}; // pozycje planszy na których może pojawić się figura
 
     public Rook(final Alliance pieceAlliance, final int piecePosition) {
-        super(piecePosition, pieceAlliance);
+        super(PieceType.ROOK, piecePosition, pieceAlliance);
     }
 
     @Override

@@ -7,12 +7,15 @@ import chess.engine.board.Move;
 import java.util.Collection;
 
 public abstract class Piece {
+
+    protected  final PieceType pieceType; // typ figury
     protected final int piecePosition; // pozycja figury
-    protected final Alliance pieceAlliance;
+    protected final Alliance pieceAlliance; // określa kolor figury
     protected final boolean isFirstMove; // zmienna używana do określenia czy ruch wykonujemy jako pierwszy z serii ruchów
 
-    Piece(final int piecePosition, final Alliance pieceAlliance)
+    Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance)
     {
+        this.pieceType = pieceType;
         this.pieceAlliance = pieceAlliance;
         this.piecePosition = piecePosition;
         this.isFirstMove = false;
@@ -32,16 +35,49 @@ public abstract class Piece {
         return this.isFirstMove;
     }
 
+    public PieceType getPieceType() { return this.pieceType; }
+
     public abstract Collection<Move> calculateLegalMoves(final Board board); // zwracamy zbiór możliwych (prawidłowych) ruchów elementu
 
     public enum PieceType // enum, wyliczamy figury po ich nazwach w celu ulepszenia wyświetlania metodą toString
     {
-        PAWN("P"), // każdej z figur przyznajemy "nazwę"
-        KNIGHT("N"),
-        BISHOP("B"),
-        ROOK("R"),
-        QUEEN("Q"),
-        KING("K");
+        // każdej z figur przyznajemy "nazwę"
+        PAWN("P") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        KNIGHT("N") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        BISHOP("B") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        ROOK("R") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        QUEEN("Q") {
+            @Override
+            public boolean isKing() {
+                return false;
+            }
+        },
+        KING("K") {
+            @Override
+            public boolean isKing() {
+                return true;
+            }
+        };
 
         private String pieceName;
 
@@ -54,6 +90,8 @@ public abstract class Piece {
         public String toString() {
             return this.pieceName; // w metodzie toString zwracamy "nazwę" figury
         }
+
+        public abstract boolean isKing();
     }
 
 }
