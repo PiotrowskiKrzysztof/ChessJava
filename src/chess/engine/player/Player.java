@@ -5,19 +5,36 @@ import chess.engine.board.Board;
 import chess.engine.board.Move;
 import chess.engine.pieces.King;
 import chess.engine.pieces.Piece;
+import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public abstract class Player {
 
     protected final Board board;
     protected final King playerKing;
     protected final Collection<Move> legalMoves;
+    private final boolean isInCheck;
 
     Player(final Board board, final Collection<Move> legalMoves, final Collection<Move> opponentMoves) {
         this.board = board;
         this.playerKing = establishKing();
         this.legalMoves = legalMoves;
+        this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty(); // przekazujemy aktualną pozycję King'a
+    }
+
+    private static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
+        final List<Move> attackMoves = new ArrayList<>(); // przekazując listę sprawdzamy, czy zostanie podjęty atak (odnosi się to do zmiennej isInCheck, ustawianej w konstruktorze Player'a)
+        for(final Move move : moves)
+        {
+            if(piecePosition == move.getDestinationCoordinate()) // sprawdzamy, czy położenie przeciwnika przecina się z pozycją King'a
+            {
+                attackMoves.add(move); // jeśli tak, to jest to ruch atakujący
+            }
+        }
+        return ImmutableList.copyOf(attackMoves);
     }
 
     // ustala czy figura jest Królem
@@ -34,19 +51,32 @@ public abstract class Player {
         return this.legalMoves.contains(move);
     }
 
-    // poniższe metody będzie trzeba dokończyć !
     // sprawsza czy król jest w szachu
     public boolean isInCheck() {
-        return false;
+        return this.isInCheck;
     }
 
+    // poniższe metody będzie trzeba dokończyć !
     // sprawdza czy jest szach-mat
     public boolean isInCheckMate() {
-        return false;
+        return this.isInCheck && !hasEscapeMoves();
     }
 
     // sprawdza czy wystąpił pat (nie ma szach-matu, a król przegrywającego gracza nie ma możliwości ruchu)
     public boolean isInStaleMate() {
+        return !this.isInCheck() && !hasEscapeMoves();
+    }
+
+    // sprawdzamy czy dana figura ma drogę ucieczki (w tym przypadku figurą będzie King)
+    protected boolean hasEscapeMoves() {
+        for(final Move move : this.legalMoves)
+        {
+            final MoveTransition transition = makeMove(move);
+            if(transition.getMoveStatus().isDone())  // if sprawdza, czy jesteśmy w stanie wykonać ruch (czy nie jesteśmy w sytuacji bez wyjścia)
+            {
+                return true;
+            }
+        }
         return false;
     }
 

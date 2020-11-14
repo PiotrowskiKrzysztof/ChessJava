@@ -15,4 +15,8 @@ public class MoveTransition { //klasa do przechowywania informacji o przejściac
         this.moveStatus = moveStatus;
     }
 
+    public MoveStatus getMoveStatus()
+    {
+        return this.moveStatus;
+    }
 }

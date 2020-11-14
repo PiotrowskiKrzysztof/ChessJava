@@ -5,13 +5,19 @@ import chess.engine.pieces.Piece;
 public abstract class Move {
     final Board board;
     final Piece movedPiece;
-    final int destimationCoordinate;
+    final int destinationCoordinate;
 
     // klasa ruchu
-    private Move(final Board board, final Piece movedPiece, final int destimationCoordinate) {
+    private Move(final Board board, final Piece movedPiece, final int destinationCoordinate) {
         this.board = board;
         this.movedPiece = movedPiece;
-        this.destimationCoordinate = destimationCoordinate;
+        this.destinationCoordinate = destinationCoordinate;
+    }
+
+    // getter zwracający współrzędną miejsca docelowego
+    public int getDestinationCoordinate()
+    {
+        return this.destinationCoordinate;
     }
 
     // klasa zwyczajnego ruchu
