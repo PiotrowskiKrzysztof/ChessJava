@@ -25,6 +25,17 @@ public abstract class Player {
         this.isInCheck = !Player.calculateAttacksOnTile(this.playerKing.getPiecePosition(), opponentMoves).isEmpty(); // przekazujemy aktualną pozycję King'a
     }
 
+    //getter do pobierania King'a
+    public King getPlayerKing()
+    {
+        return this.playerKing;
+    }
+
+    public Collection<Move> getLegalMoves()
+    {
+        return this.legalMoves;
+    }
+
     private static Collection<Move> calculateAttacksOnTile(int piecePosition, Collection<Move> moves) {
         final List<Move> attackMoves = new ArrayList<>(); // przekazując listę sprawdzamy, czy zostanie podjęty atak (odnosi się to do zmiennej isInCheck, ustawianej w konstruktorze Player'a)
         for(final Move move : moves)
@@ -87,7 +98,20 @@ public abstract class Player {
 
     // po wykonaniu ruchu dostajesz informację o przejściu
     public MoveTransition makeMove(final Move move) {
-        return null;
+        if(!isMoveLegal(move))
+        {
+            return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE); // jeśli ruch nie jest dozwolony, zwracamy tego samego boarda - nic się nie dzieje
+        }
+        // jeśli jednak ruch okaże się możliwy do wykonania...
+        final Board transitionBoard = move.execute(); // ...po prostu wykonujemy go ;)
+        // w tym miejscu sprawdzamy ataki oponenta aktualnego gracza
+        final Collection<Move> kingAttacks = Player.calculateAttacksOnTile(transitionBoard.currentPlayer().getOpponent().getPlayerKing().getPiecePosition(), transitionBoard.currentPlayer().getLegalMoves());
+        // jeśli jest jakikolwiek atak King'a
+        if(!kingAttacks.isEmpty())
+        {
+            return new MoveTransition(this.board, move, MoveStatus.LEAVES_PLAYER_IN_CHECK);
+        }
+        return new MoveTransition(transitionBoard, move, MoveStatus.DONE);
     }
 
     public abstract Collection<Piece> getActivePieces();

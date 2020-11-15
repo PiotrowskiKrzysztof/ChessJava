@@ -20,11 +20,18 @@ public abstract class Move {
         return this.destinationCoordinate;
     }
 
+    public abstract Board execute();
+
     // klasa zwyczajnego ruchu
     public static final class MajorMove extends Move {
 
         public MajorMove(final Board board, final Piece movedPiece, final int destimationCoordinate) {
             super(board, movedPiece, destimationCoordinate);
+        }
+        // METODA DO UZUPEŁNIENIA! Wykonanie ruchu jako zwrócenie board'a
+        @Override
+        public Board execute() {
+            return null;
         }
     }
 
@@ -36,6 +43,11 @@ public abstract class Move {
         public AttackMove(final Board board, final Piece movedPiece, final int destimationCoordinate, final Piece attackedPiece) {
             super(board, movedPiece, destimationCoordinate);
             this.attackedPiece = attackedPiece;
+        }
+        // METODA DO UZUPEŁNIENIA! Wykonanie ruchu jako zwrócenie board'a
+        @Override
+        public Board execute() {
+            return null;
         }
     }
 

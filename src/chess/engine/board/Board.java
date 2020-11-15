@@ -18,6 +18,8 @@ public class Board {
     private final WhitePlayer whitePlayer;
     private final BlackPlayer blackPlayer;
 
+    private final Player currentPlayer;
+
     //konstruktor szachownicy
     private Board(Builder builder) {
         this.gameBoard = createGameBoard(builder);
@@ -29,6 +31,8 @@ public class Board {
 
         this.whitePlayer = new WhitePlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
         this.blackPlayer = new BlackPlayer(this, whiteStandardLegalMoves, blackStandardLegalMoves);
+
+        this.currentPlayer = null;
     }
 
     @Override
@@ -54,6 +58,12 @@ public class Board {
     //zwraca czarnego gracza
     public Player blackPlayer() {
         return this.blackPlayer;
+    }
+
+    //zwraca aktualnego gracza
+    public Player currentPlayer()
+    {
+        return this.currentPlayer;
     }
 
     //zwraca czarne figury
