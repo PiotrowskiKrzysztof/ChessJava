@@ -39,6 +39,8 @@ public abstract class Piece {
 
     public abstract Collection<Move> calculateLegalMoves(final Board board); // zwracamy zbiór możliwych (prawidłowych) ruchów elementu
 
+    public abstract Piece movePiece(Move move); // // pobiera ruch figury i tworzy nową figurę na przesuniętym miejscu
+
     public enum PieceType // enum, wyliczamy figury po ich nazwach w celu ulepszenia wyświetlania metodą toString
     {
         // każdej z figur przyznajemy "nazwę"

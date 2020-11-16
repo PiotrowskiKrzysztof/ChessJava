@@ -67,6 +67,12 @@ public class Knight extends Piece{ // KLASA REPREZENTUJĄCA FIGURĘ SKOCZKA
         return ImmutableList.copyOf(legalMoves); // jako wynik zwracamy listę dozwolonych ruchów
     }
 
+    // pobiera ruch figury i tworzy nową figurę na przesuniętym miejscu
+    @Override
+    public Knight movePiece(final Move move) {
+        return new Knight(move.getMovedPiece().getPieceAlliance(), move.getDestinationCoordinate());
+    }
+
     @Override
     public String toString() {
         return PieceType.KNIGHT.toString();

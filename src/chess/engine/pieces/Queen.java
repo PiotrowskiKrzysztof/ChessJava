@@ -62,6 +62,12 @@ public class Queen extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ HETMANA / KR
         return ImmutableList.copyOf(legalMoves);
     }
 
+    // pobiera ruch figury i tworzy nową figurę na przesuniętym miejscu
+    @Override
+    public Queen movePiece(final Move move) {
+        return new Queen(move.getMovedPiece().getPieceAlliance(), move.getDestinationCoordinate());
+    }
+
     @Override
     public String toString() {
         return PieceType.QUEEN.toString();
