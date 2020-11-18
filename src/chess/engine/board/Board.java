@@ -6,6 +6,7 @@ import chess.engine.player.BlackPlayer;
 import chess.engine.player.Player;
 import chess.engine.player.WhitePlayer;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 
 import java.util.*;
 
@@ -157,6 +158,10 @@ public class Board {
         builder.setMoveMaker(Alliance.WHITE);
         return builder.build();
 
+    }
+
+    public Iterable<Move> getAllLegalMoves() {
+        return Iterables.unmodifiableIterable(Iterables.concat(this.whitePlayer.getLegalMoves(), this.blackPlayer.getLegalMoves()));
     }
 
     // klasa odpowiedzialna za budowanie szachownicy
