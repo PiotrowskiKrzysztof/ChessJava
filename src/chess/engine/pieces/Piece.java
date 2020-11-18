@@ -12,6 +12,7 @@ public abstract class Piece {
     protected final int piecePosition; // pozycja figury
     protected final Alliance pieceAlliance; // określa kolor figury
     protected final boolean isFirstMove; // zmienna używana do określenia czy ruch wykonujemy jako pierwszy z serii ruchów
+    private final int cachedHashCode;
 
     Piece(final PieceType pieceType, final int piecePosition, final Alliance pieceAlliance)
     {
@@ -19,9 +20,39 @@ public abstract class Piece {
         this.pieceAlliance = pieceAlliance;
         this.piecePosition = piecePosition;
         this.isFirstMove = false;
+        this.cachedHashCode = computeHashCode();
     }
 
-     public int getPiecePosition() {
+    // metoda slużąca do przeliczania hashcode'u (mogłaby być też jako override poniżej)
+    private int computeHashCode() {
+        int result = pieceType.hashCode();
+        result = 31 * result + pieceAlliance.hashCode();
+        result = 31 * result + piecePosition;
+        result = 31 * result + (isFirstMove ? 1 : 0);
+        return result;
+    }
+
+    // nadpisana metoda equals() - porównujemy obiekty, bazowy equals porównuje referencje
+    @Override
+    public boolean equals(final Object other) {
+        if(this == other)
+        {
+            return true;
+        }
+        if(!(other instanceof Piece))
+        {
+            return false;
+        }
+        final Piece otherPiece = (Piece) other;
+        return piecePosition == otherPiece.getPiecePosition() && pieceType == otherPiece.getPieceType() && pieceAlliance == otherPiece.getPieceAlliance() && isFirstMove == otherPiece.isFirstMove();
+    }
+
+    @Override
+    public int hashCode() {
+        return this.cachedHashCode;
+    }
+
+    public int getPiecePosition() {
         return this.piecePosition;
      }
 
