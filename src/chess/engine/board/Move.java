@@ -84,7 +84,7 @@ public abstract class Move {
 
         // zwraca położenie figur gracza
         for(final Piece piece : this.board.currentPlayer().getActivePieces()) {
-            // DO ZROBIENIA! trzeba dodać hashcode
+            // TODO: DO ZROBIENIA! trzeba dodać hashcode
             if(!this.movedPiece.equals(piece)) {
                 builder.setPiece(piece);
             }
