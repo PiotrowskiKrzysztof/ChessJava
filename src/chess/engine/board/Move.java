@@ -1,5 +1,7 @@
 package chess.engine.board;
 
+import chess.engine.board.Board.Builder;
+import chess.engine.pieces.Pawn;
 import chess.engine.pieces.Piece;
 
 public abstract class Move {
@@ -14,6 +16,34 @@ public abstract class Move {
         this.board = board;
         this.movedPiece = movedPiece;
         this.destinationCoordinate = destinationCoordinate;
+    }
+
+    // tworzymy hashCode ruchu zawierający informacje o wykonanym ruchu
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+
+        result = prime * result + this.destinationCoordinate;
+        result = prime * result  + this.movedPiece.hashCode();
+
+        return  result;
+    }
+
+    //porównywanie ruchów - potrzebne do wykonania ataku, który zadamy
+    //figury posiadają całą Kolekcję ruchów i będziemy sprawdzać, czy ruch, ktory chcemy wykonać istnieje w Kolekcji
+    @Override
+    public boolean equals(final Object other) {
+        if(this == other) {
+            return true;
+        }
+        if(!(other instanceof Move)) { //instanceof porównuje typy, sprawdza czy other jest klasą Move
+            return false;
+        }
+        final Move otherMove = (Move) other;
+        return  getDestinationCoordinate() == otherMove.getDestinationCoordinate() &&
+                getMovedPiece().equals(otherMove.getMovedPiece());
+
     }
 
     // getter aktualnego położenia
@@ -32,10 +62,25 @@ public abstract class Move {
         return this.movedPiece;
     }
 
+    // sprawdza czy można atakować
+    public boolean isAttack() {
+        return false;
+    }
+
+    // sprawdza czy to ruch roszadowy (castling)
+    public boolean isCastlingMove() {
+        return false;
+    }
+
+    // getter atakowanej figury
+    public Piece getAttackedPiece() {
+        return null;
+    }
+
     // Zwraca nową tablicę z wykonanym ruchem
     public Board execute() {
 
-        final Board.Builder builder = new Board.Builder();
+        final Builder builder = new Builder();
 
         // zwraca położenie figur gracza
         for(final Piece piece : this.board.currentPlayer().getActivePieces()) {
@@ -74,10 +119,41 @@ public abstract class Move {
             super(board, movedPiece, destinationCoordinate);
             this.attackedPiece = attackedPiece;
         }
+
+        // tworzymy hashCode ataku zawierający informacje o wykonanym ataku
+        @Override
+        public int hashCode() {
+            return this.attackedPiece.hashCode() + super.hashCode();
+        }
+
+        //porównywanie ruchów - potrzebne do wykonania ataku, który zadamy
+        //figury posiadają całą Kolekcję ruchów i będziemy sprawdzać, czy ruch, ktory chcemy wykonać istnieje w Kolekcji
+        @Override
+        public boolean equals(final Object other) {
+            if(this == other) {
+                return true;
+            }
+            if(!(other instanceof AttackMove)) { //instanceof porównuje typy, sprawdza czy other jest klasą Move
+                return false;
+            }
+            final  AttackMove otherAttackMove = (AttackMove) other;
+            return super.equals(otherAttackMove) && getAttackedPiece().equals(otherAttackMove.getAttackedPiece());
+        }
+
         // METODA DO UZUPEŁNIENIA! Wykonanie ruchu jako zwrócenie board'a
         @Override
         public Board execute() {
             return null;
+        }
+
+        @Override
+        public boolean isAttack() {
+            return true;
+        }
+
+        @Override
+        public Piece getAttackedPiece () {
+            return this.attackedPiece;
         }
     }
 
@@ -110,6 +186,26 @@ public abstract class Move {
 
         public PawnJump(final Board board, final Piece movedPiece, final int destinationCoordinate) {
             super(board, movedPiece, destinationCoordinate);
+        }
+
+        @Override
+        public Board execute() {
+            final Builder builder = new Builder();
+            // przypisanie pozycji figur gracza
+            for(final Piece piece : this.board.currentPlayer().getActivePieces()) {
+                if(!this.movedPiece.equals(piece)) {
+                    builder.setPiece(piece);
+                }
+            }
+            // przypisanie pozycji figur przeciwnika
+            for(final Piece piece : this.board.currentPlayer().getOpponent().getActivePieces()) {
+                builder.setPiece(piece);
+            }
+            final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this); // pobiera nowe koordynaty i tworzy na ich miejscu figurę
+            builder.setPiece(movedPiece); // przypisanie pozycji po wykonanym ruchu
+            builder.setEnPassantPawn(movedPawn);
+            builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
+            return builder.build();
         }
     }
 

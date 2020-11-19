@@ -171,6 +171,8 @@ public class Board {
         Map<Integer, Piece> boardConfig;
         //odpowiada za określenie kolejności wykonywania ruchu
         Alliance nextMoveMaker;
+        private Pawn enPassantPawn; // pionek ze specjalnym ruchem atakującym (bicie w przelocie)
+        //Możliwość bicia w przelocie powstaje tylko wówczas, gdy pion jednej ze stron wykonał ruch o dwa pola, a pole, które minął, jest atakowane przez piona strony przeciwnej.
 
         public Builder() {
             this.boardConfig = new HashMap<>();
@@ -194,6 +196,9 @@ public class Board {
             return new Board(this);
         }
 
+        public void setEnPassantPawn(Pawn enPassantPawn) {
+            this.enPassantPawn = enPassantPawn;
+        }
     }
 
 }
