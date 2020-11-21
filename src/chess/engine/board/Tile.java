@@ -35,6 +35,10 @@ public abstract class Tile {
 
     public abstract boolean isTileOccupied(); //sprawdza czy kwadracik zajęty
     public abstract Piece getPiece(); //otrzymuje figure
+    public int getTileCoordinate()
+    {
+        return this.tileCoordinate;
+    }
 
     //klasa do pustych kwadracikow
     public static final class EmptyTile extends Tile {

@@ -3,8 +3,11 @@ package chess.engine.player;
 import chess.engine.Alliance;
 import chess.engine.board.Board;
 import chess.engine.board.Move;
+import chess.engine.board.Move.KingSideCastleMove;
+import chess.engine.board.Move.QueenSideCastleMove;
 import chess.engine.board.Tile;
 import chess.engine.pieces.Piece;
+import chess.engine.pieces.Rook;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -35,7 +38,7 @@ public class BlackPlayer extends Player{
     }
 
     @Override
-    protected Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentsLegals) {
+    protected Collection<Move> calculateKingCastles(final Collection<Move> playerLegals, final Collection<Move> opponentsLegals) {
         final List<Move> kingCastles = new ArrayList<>(); // Lista do przechowywania roszad
 
         // jeżeli jest to pierwszy ruch oraz król nie jest w szachu
@@ -51,8 +54,7 @@ public class BlackPlayer extends Player{
                     if(Player.calculateAttacksOnTile(5, opponentsLegals).isEmpty() &&
                             Player.calculateAttacksOnTile(6, opponentsLegals).isEmpty() &&
                             rookTile.getPiece().getPieceType().isRook()) {
-                        // TODO: do uzupelnienia, trzeba dodoać castleMove
-                        kingCastles.add(null);
+                        kingCastles.add(new KingSideCastleMove(this.board, this.playerKing, 6, (Rook)rookTile.getPiece(), rookTile.getTileCoordinate(), 5));
                     }
                 }
             }
@@ -65,8 +67,7 @@ public class BlackPlayer extends Player{
 
                 // jeżeli lewa wieża jest na swojej pozycja oraz jest to pierwszy ruch
                 if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
-                    // TODO: do uzupełnienia, trzeba dodać castleMove
-                    kingCastles.add(null);
+                    kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook)rookTile.getPiece(), rookTile.getTileCoordinate(), 3));
                 }
             }
         }
