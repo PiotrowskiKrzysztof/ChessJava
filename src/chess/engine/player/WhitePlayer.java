@@ -55,7 +55,6 @@ public class WhitePlayer extends Player{
                         // TODO: do uzupelnienia, trzeba dodoać castleMove
                         kingCastles.add(null);
                     }
-
                 }
             }
             // jeżeli pola na lewo od białego króla są wolne
@@ -70,11 +69,8 @@ public class WhitePlayer extends Player{
                     // TODO: do uzupełnienia, trzeba dodać castleMove
                     kingCastles.add(null);
                 }
-
             }
-
         }
-
 
         return ImmutableList.copyOf(kingCastles); //ImmutableList zwraca listę, której nie można zmienić (biblioteka guava)
     }

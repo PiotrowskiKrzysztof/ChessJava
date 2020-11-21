@@ -3,9 +3,13 @@ package chess.engine.player;
 import chess.engine.Alliance;
 import chess.engine.board.Board;
 import chess.engine.board.Move;
+import chess.engine.board.Tile;
 import chess.engine.pieces.Piece;
+import com.google.common.collect.ImmutableList;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class BlackPlayer extends Player{
     public BlackPlayer(final Board board, final Collection<Move> whiteStandardLegalMoves, final Collection<Move> blackStandardLegalMoves) {
@@ -28,5 +32,45 @@ public class BlackPlayer extends Player{
     @Override
     public Player getOpponent() {
         return this.board.whitePlayer();
+    }
+
+    @Override
+    protected Collection<Move> calculateKingCastles(Collection<Move> playerLegals, Collection<Move> opponentsLegals) {
+        final List<Move> kingCastles = new ArrayList<>(); // Lista do przechowywania roszad
+
+        // jeżeli jest to pierwszy ruch oraz król nie jest w szachu
+        if(this.playerKing.isFirstMove() && !this.isInCheck()) {
+            // jeżeli pola na prawo od czarnego króla są wolne
+            if(!this.board.getTile(5).isTileOccupied() && !this.board.getTile(6).isTileOccupied()) {
+
+                final Tile rookTile = this.board.getTile(7); // pozycja wieży po prawej stronie
+
+                // jeżeli prawa wieża jest na swojej pozycji oraz jest to pierwszy ruch
+                if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
+                    // sprawdza czy przeciwnik nie ma ruchów atakujących na pozycje 5 i 6 oraz czy figura na pozycji wieży jest wieżą
+                    if(Player.calculateAttacksOnTile(5, opponentsLegals).isEmpty() &&
+                            Player.calculateAttacksOnTile(6, opponentsLegals).isEmpty() &&
+                            rookTile.getPiece().getPieceType().isRook()) {
+                        // TODO: do uzupelnienia, trzeba dodoać castleMove
+                        kingCastles.add(null);
+                    }
+                }
+            }
+            // jeżeli pola na lewo od czarnego króla są wolne
+            if(!this.board.getTile(1).isTileOccupied() &&
+                    !this.board.getTile(2).isTileOccupied() &&
+                    !this.board.getTile(3).isTileOccupied()) {
+
+                final Tile rookTile = this.board.getTile(0); // pozycja wieży po lewej stronie
+
+                // jeżeli lewa wieża jest na swojej pozycja oraz jest to pierwszy ruch
+                if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
+                    // TODO: do uzupełnienia, trzeba dodać castleMove
+                    kingCastles.add(null);
+                }
+            }
+        }
+
+        return ImmutableList.copyOf(kingCastles); //ImmutableList zwraca listę, której nie można zmienić (biblioteka guava)
     }
 }
