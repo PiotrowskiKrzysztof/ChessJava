@@ -1,11 +1,16 @@
 package chess.gui;
 
+import chess.engine.board.Board;
 import chess.engine.board.BoardUtils;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,10 +98,26 @@ public class Table {
             validate(); // metoda JPanel weryfikuje ten kontener i wszystkie jego składniki podrzędne.
         }
 
+        private void assignTilePieceIcon(final Board board)
+        {
+            this.removeAll(); // zdejmujemy wszystko co zostało uprzednio umieszczone na panelu (JPanel)
+            if(board.getTile(this.tileId).isTileOccupied()) // jeśli pobrany element boarda jest zajęty (jeśli na Tile'u stoi Piece) to rysujemy ten element
+            {
+                String pieceIconPath = ""; // zmienna przechowująca lokalną ścieżkę dostępu do obrazka
+                try { // pobieranie obrazka umieszczamy w bloku try-catch
+                    final BufferedImage image = ImageIO.read(new File(pieceIconPath + board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0,1) +
+                            board.getTile(this.tileId).getPiece().toString() + ".gif")); // pobieranie obrazka zapisanego za pomocą tego wzorca, np. "WB.gif" - white bishop
+                    add(new JLabel(new ImageIcon(image)));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         private void assignTileColor() { // nadajemy polom nieparzystym i parzystym odpowiadający kolor
-            if(BoardUtils.FIRST_ROW[this.tileId] || BoardUtils.THIRD_ROW[this.tileId] || BoardUtils.FIFTH_ROW[this.tileId] || BoardUtils.SEVENTH_ROW[this.tileId])
+            if(BoardUtils.EIGHTH_RANK[this.tileId] || BoardUtils.SIXTH_RANK[this.tileId] || BoardUtils.FOURTH_RANK[this.tileId] || BoardUtils.SECOND_RANK[this.tileId])
                 setBackground(this.tileId % 2 == 0 ? lightTileColor : darkTileColor);
-            else if(BoardUtils.SECOND_ROW[this.tileId] || BoardUtils.FOURTH_ROW[this.tileId] || BoardUtils.SIXTH_ROW[this.tileId] || BoardUtils.EIGHTH_ROW[this.tileId])
+            else if(BoardUtils.SEVENTH_RANK[this.tileId] || BoardUtils.FIFTH_RANK[this.tileId] || BoardUtils.THIRD_RANK[this.tileId] || BoardUtils.FIRST_RANK[this.tileId])
                 setBackground(this.tileId % 2 != 0 ? lightTileColor : darkTileColor);
         }
 

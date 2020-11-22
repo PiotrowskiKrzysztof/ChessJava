@@ -39,7 +39,7 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
                 legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
             }
             // odtworzenie "skoku" pionu z pozycji startowej, sprawdzamy czy jest to pierwszy wykonywany ruch na planszy, czy figury w odpowiednich kolorach znajdują się w odpowiadających im rzędach (ruch nieatakujący)
-            else if(currentCandidateOffset == 16 && this.isFirstMove() && (BoardUtils.SECOND_ROW[this.piecePosition] && this.getPieceAlliance().isBlack()) || (BoardUtils.SEVENTH_ROW[this.piecePosition] && this.getPieceAlliance().isWhite()))
+            else if(currentCandidateOffset == 16 && this.isFirstMove() && (BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) || (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite()))
             {
                 // sprawdzamy czy kwadracik będący nad polem nad którym figura wykonuje skok jest pusty
                 final int behindCandidateDestinationCoordinate = this.piecePosition + (this.pieceAlliance.getDirection() * 8);

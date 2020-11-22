@@ -66,7 +66,10 @@ public class BlackPlayer extends Player{
                 final Tile rookTile = this.board.getTile(0); // pozycja wieży po lewej stronie
 
                 // jeżeli lewa wieża jest na swojej pozycja oraz jest to pierwszy ruch
-                if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()) {
+                if(rookTile.isTileOccupied() && rookTile.getPiece().isFirstMove()
+                        && Player.calculateAttacksOnTile(2, opponentsLegals).isEmpty()
+                        && Player.calculateAttacksOnTile(3, opponentsLegals).isEmpty()
+                        && rookTile.getPiece().getPieceType().isRook()) {
                     kingCastles.add(new QueenSideCastleMove(this.board, this.playerKing, 2, (Rook)rookTile.getPiece(), rookTile.getTileCoordinate(), 3));
                 }
             }
