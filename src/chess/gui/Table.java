@@ -6,6 +6,7 @@ import chess.engine.board.Move;
 import chess.engine.board.Tile;
 import chess.engine.pieces.Piece;
 import chess.engine.player.MoveTransition;
+import com.google.common.collect.Lists;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -18,6 +19,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static javax.swing.SwingUtilities.isLeftMouseButton;
@@ -33,6 +36,9 @@ public class Table {
     private Tile sourceTile; // aktualnie kliknięty kwadracik
     private Tile destinationTile; // kwadracik na który chcemy podążać
     private Piece humanMovedPiece; // figura, którą gracz wykonał ruch
+    private BoardDirection boardDirection; // kierunek planszy
+
+    private boolean highlightLegalMoves;
 
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(600,600); // zmienna z rozmiarem okna
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350); // zmienna z rozmiarem szachownicy
@@ -45,20 +51,22 @@ public class Table {
     public Table() {
         this.gameFrame = new JFrame("JChess");
         this.gameFrame.setLayout(new BorderLayout()); // odpowiada za ułożenie elementów w oknie
-        final JMenuBar tableMenuBar = createMenuBar();; // stworzenie menu okna
+        final JMenuBar tableMenuBar = createTableMenuBar(); // stworzenie menu okna
         this.gameFrame.setJMenuBar(tableMenuBar); // przypisanie stworzonego menu do okna
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION); // przekazanie zmiennej z rozmiarem do Jframe
         this.chessBoard = Board.createStandardBoard(); // tworzenie szachownicy
         this.boardPanel = new BoardPanel(); // dodanie panelu gry do okna gry
+        this.boardDirection = BoardDirection.NORMAL; // ustawiamy kierunek ustawienia planszy na normalny
+        this.highlightLegalMoves = false; // nadajemy false, tak by bazowo nie wyświetlały się podpowiedzi ruchów
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER); // wycentrowanie panelu gry
-
         this.gameFrame.setVisible(true); // ustawiasz widoczność
     }
 
     // metoda wywołująca menu
-    private JMenuBar createMenuBar() {
+    private JMenuBar createTableMenuBar() {
         final JMenuBar tableMenuBar = new JMenuBar();
         tableMenuBar.add(createFileMenu());
+        tableMenuBar.add(createPreferencesMenu());
         return tableMenuBar;
     }
 
@@ -85,6 +93,72 @@ public class Table {
         return fileMenu;
     }
 
+    // menu preferencji
+    private JMenu createPreferencesMenu()
+    {
+        final JMenu preferencesMenu = new JMenu("Preferences");
+        final JMenuItem flipBoardMenuItem = new JMenuItem("Flip Board");
+        flipBoardMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { // po wybraniu opcji z listy...
+                boardDirection = boardDirection.opposite(); // ...pobieramy aktualny kierunek szachownicy i zwracamy jego odwrotność
+                boardPanel.drawBoard(chessBoard);
+            }
+        });
+        preferencesMenu.add(flipBoardMenuItem);
+
+        preferencesMenu.addSeparator();
+
+        final JCheckBoxMenuItem legalMoveHighlighterCheckbox = new JCheckBoxMenuItem("Highlight legal moves", false);
+
+        legalMoveHighlighterCheckbox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                highlightLegalMoves = legalMoveHighlighterCheckbox.isSelected();
+            }
+        });
+
+        preferencesMenu.add(legalMoveHighlighterCheckbox);
+
+        return preferencesMenu;
+    }
+
+    // enum określający, w którą stronę zwrócona jest plansza z figurami
+    public enum BoardDirection
+    {
+        NORMAL
+                {
+                    @Override
+                    List<TilePanel> traverse(final List<TilePanel> boardTiles)
+                    {
+                        return boardTiles;
+                    }
+
+                    @Override
+                    BoardDirection opposite() // metoda opposite dla każdego enum'a będzie zwracała odwrotną stronę szachownicy (zamiana stronami tak, by wygodnie grać)
+                    {
+                        return FLIPPED;
+                    }
+                },
+        FLIPPED
+                {
+                    @Override
+                    List<TilePanel> traverse(final List<TilePanel> boardTiles)
+                    {
+                        return Lists.reverse(boardTiles);
+                    }
+
+                    @Override
+                    BoardDirection opposite()
+                    {
+                        return NORMAL;
+                    }
+                };
+
+        abstract List<TilePanel> traverse(final List<TilePanel> boardTiles);
+        abstract BoardDirection opposite();
+    }
+
     // klasa do szachownicy
     private class BoardPanel extends JPanel {
         final List<TilePanel> boardTiles;
@@ -104,7 +178,7 @@ public class Table {
         public void drawBoard (final Board board)
         {
             removeAll(); // zdejmujemy wszystkie umieszczone komponenty
-            for(final TilePanel tilePanel : boardTiles)
+            for(final TilePanel tilePanel : boardDirection.traverse(boardTiles)) // for przechodzi po planszy odpowiednio do aktualnego kierunku planszy
             {
                 tilePanel.drawTile(board); // dla każdego elementu rysujemy kwadracik (Tile'a) na boardzie
                 add(tilePanel); // dodajemy element do boarda
@@ -194,6 +268,7 @@ public class Table {
         {
             assignTileColor(); // nadajemy kwadracikowi kolor
             assignTilePieceIcon(board);
+            highlightLegals(board);
             validate();
             repaint();
 
@@ -212,6 +287,37 @@ public class Table {
                     e.printStackTrace();
                 }
             }
+        }
+
+        // "podświetlamy" możliwe ruchy na planszy
+        private void highlightLegals(final Board board)
+        {
+            if(highlightLegalMoves)  // podświetlenie opcjonalne, jeśli zostanie wybrane w menu jako aktywne...
+            {
+                for(final Move move : pieceLegalMoves(board)) // pobieramy wybrany przez użytkownika element (a co za tym idzie, sprawdzamy jego możliwe ruchy)
+                {
+                    if(move.getDestinationCoordinate() == this.tileId) // jeśli pobrana lokalizacja jest dostępna dla figury
+                    {
+                        try
+                        {   // nadajemy label w postaci obrazka
+                            add(new JLabel(new ImageIcon(ImageIO.read(new File("art/highlights/green_dot.png")))));
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+        private Collection<Move> pieceLegalMoves(final Board board)
+        {   // jeśli został wybrany element oraz jeśli aliance jest równy aktualnemu graczowi
+            if(humanMovedPiece != null && humanMovedPiece.getPieceAlliance() == board.currentPlayer().getAlliance())
+            { // przelicz możliwe ruchy elementu planszy
+                return humanMovedPiece.calculateLegalMoves(board);
+            } // w p. p. zwróc pustą listę
+            return Collections.emptyList();
         }
 
         private void assignTileColor() { // nadajemy polom nieparzystym i parzystym odpowiadający kolor
