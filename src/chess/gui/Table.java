@@ -2,17 +2,26 @@ package chess.gui;
 
 import chess.engine.board.Board;
 import chess.engine.board.BoardUtils;
+import chess.engine.board.Move;
+import chess.engine.board.Tile;
+import chess.engine.pieces.Piece;
+import chess.engine.player.MoveTransition;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static javax.swing.SwingUtilities.isLeftMouseButton;
+import static javax.swing.SwingUtilities.isRightMouseButton;
 
 public class Table {
 
@@ -20,10 +29,15 @@ public class Table {
     private final BoardPanel boardPanel; // panel gry
     private final Board chessBoard; // szachownica
 
+    // zmienne potrzebne do zaznaczania i odznaczania figur na kwadraciku
+    private Tile sourceTile; // aktualnie kliknięty kwadracik
+    private Tile destinationTile; // kwadracik na który chcemy podążać
+    private Piece humanMovedPiece; // figura, którą gracz wykonał ruch
+
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(600,600); // zmienna z rozmiarem okna
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350); // zmienna z rozmiarem szachownicy
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10); // zmienna z rozmiarem kwadracika
-    private static String defaultPieceImagesPath = "art/pieces/";
+    private static String defaultPieceImagesPath = "art/pieces/"; // początek sieżki do figur
 
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
@@ -98,6 +112,52 @@ public class Table {
             setPreferredSize(TILE_PANEL_DIMENSION); // utalenie rozmiaru kwadracika
             assignTileColor(); // ustalenie koloru kwadracika
             assignTilePieceIcon(chessBoard);
+
+            addMouseListener(new MouseListener() { // nasłuchiwanie zdarzeń myszki
+                @Override
+                public void mouseClicked(final MouseEvent e) {
+
+                    if(isRightMouseButton(e)) { // kliknięcie prawym przyciskiem myszki powoduje odznaczenie figury
+                        sourceTile = null;
+                        destinationTile = null;
+                        humanMovedPiece = null;
+                    } else if(isLeftMouseButton(e)) { // kliknięcie lewym przyciskiem myszki powoduje zaznaczenie figury
+                        if(sourceTile == null) {
+                            // przy pierwszym kliknięciu ...
+                            sourceTile = chessBoard.getTile(tileId); // ... zaznaczamy kliknięty kwadracik
+                            humanMovedPiece = sourceTile.getPiece(); // ... pobieramy figurę na klikniętym kwadraciku
+                            if(humanMovedPiece == null) { // ... jeżeli gracz nie wykonał ruchu ...
+                                sourceTile = null;        // ... to przypisujemy zaznaczonemu kwadracikowi początkową wartość null
+                            }
+                        } else {
+                            // przy drugim kliknięciu ...
+                            destinationTile = chessBoard.getTile(tileId);
+                            final Move move = null;
+                        }
+                    }
+                }
+
+                @Override
+                public void mousePressed(final MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseReleased(final MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseEntered(final MouseEvent e) {
+
+                }
+
+                @Override
+                public void mouseExited(final MouseEvent e) {
+
+                }
+            });
+
             validate(); // metoda JPanel weryfikuje ten kontener i wszystkie jego składniki podrzędne.
         }
 
