@@ -27,7 +27,7 @@ public class Table {
 
     private final JFrame gameFrame; // okno gry
     private final BoardPanel boardPanel; // panel gry
-    private final Board chessBoard; // szachownica
+    private Board chessBoard; // szachownica
 
     // zmienne potrzebne do zaznaczania i odznaczania figur na kwadraciku
     private Tile sourceTile; // aktualnie kliknięty kwadracik
@@ -100,10 +100,22 @@ public class Table {
             setPreferredSize(BOARD_PANEL_DIMENSION); // ustalenie rozmiaru szachownicy
             validate(); // metoda JPanel weryfikuje ten kontener i wszystkie jego składniki podrzędne.
         }
+        // metoda do rysowania planszy
+        public void drawBoard (final Board board)
+        {
+            removeAll(); // zdejmujemy wszystkie umieszczone komponenty
+            for(final TilePanel tilePanel : boardTiles)
+            {
+                tilePanel.drawTile(board); // dla każdego elementu rysujemy kwadracik (Tile'a) na boardzie
+                add(tilePanel); // dodajemy element do boarda
+            }
+            validate();
+            repaint();
+        }
     }
 
     private class TilePanel extends JPanel {
-
+    // extends JPanel - każdemu Tile'owi przypisany panel = 64 JPanel'e
         private final int tileId;
 
         TilePanel(final BoardPanel boardPanel, final int tileId) {
@@ -117,8 +129,8 @@ public class Table {
                 @Override
                 public void mouseClicked(final MouseEvent e) {
 
-                    if(isRightMouseButton(e)) { // kliknięcie prawym przyciskiem myszki powoduje odznaczenie figury
-                        sourceTile = null;
+                    if(isRightMouseButton(e)) { // kliknięcie prawym przyciskiem myszki powoduje odznaczenie figury (imitacja cofnięcia kliknięcia)
+                        sourceTile = null; // przypisujemy każdemu wartość null - brak zaznaczenia
                         destinationTile = null;
                         humanMovedPiece = null;
                     } else if(isLeftMouseButton(e)) { // kliknięcie lewym przyciskiem myszki powoduje zaznaczenie figury
@@ -132,8 +144,24 @@ public class Table {
                         } else {
                             // przy drugim kliknięciu ...
                             destinationTile = chessBoard.getTile(tileId);
-                            final Move move = null;
+                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
+                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+                            if(transition.getMoveStatus().isDone())
+                            {
+                                chessBoard = transition.getTransitionBoard();
+                                // TODO: trzeba będzie pomyśleć nad utworzeniem dziennika logów - zapisaywać ruchy w jakiś sposób (?)
+                            }
+                            sourceTile = null;
+                            destinationTile = null;
+                            humanMovedPiece = null;
                         }
+                        // "odświeżenie" GUI
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                boardPanel.drawBoard(chessBoard); // przerysowanie planszy przy zadanym chessBoard
+                            }
+                        });
                     }
                 }
 
@@ -159,6 +187,16 @@ public class Table {
             });
 
             validate(); // metoda JPanel weryfikuje ten kontener i wszystkie jego składniki podrzędne.
+        }
+
+        // metoda do rysowania Tile'a
+        public void drawTile(final Board board)
+        {
+            assignTileColor(); // nadajemy kwadracikowi kolor
+            assignTilePieceIcon(board);
+            validate();
+            repaint();
+
         }
 
         private void assignTilePieceIcon(final Board board)

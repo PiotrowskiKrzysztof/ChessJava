@@ -19,4 +19,9 @@ public class MoveTransition { //klasa do przechowywania informacji o przejściac
     {
         return this.moveStatus;
     }
+
+    public Board getTransitionBoard()
+    {
+        return this.transitionBoard;
+    }
 }
