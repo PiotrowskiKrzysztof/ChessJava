@@ -17,11 +17,13 @@ import java.util.List;
 public class Table {
 
     private final JFrame gameFrame; // okno gry
-    private final BoardPanel boardPanel; // szachownica
+    private final BoardPanel boardPanel; // panel gry
+    private final Board chessBoard; // szachownica
 
     private final static Dimension OUTER_FRAME_DIMENSION = new Dimension(600,600); // zmienna z rozmiarem okna
     private final static Dimension BOARD_PANEL_DIMENSION = new Dimension(400, 350); // zmienna z rozmiarem szachownicy
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10); // zmienna z rozmiarem kwadracika
+    private static String defaultPieceImagesPath = "art/pieces/";
 
     private final Color lightTileColor = Color.decode("#FFFACD");
     private final Color darkTileColor = Color.decode("#593E1A");
@@ -32,9 +34,9 @@ public class Table {
         final JMenuBar tableMenuBar = createMenuBar();; // stworzenie menu okna
         this.gameFrame.setJMenuBar(tableMenuBar); // przypisanie stworzonego menu do okna
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION); // przekazanie zmiennej z rozmiarem do Jframe
-
-        this.boardPanel = new BoardPanel(); // dodanie szachownicy do okna gry
-        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER); // wycentrowanie szachownicy
+        this.chessBoard = Board.createStandardBoard(); // tworzenie szachownicy
+        this.boardPanel = new BoardPanel(); // dodanie panelu gry do okna gry
+        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER); // wycentrowanie panelu gry
 
         this.gameFrame.setVisible(true); // ustawiasz widoczność
     }
@@ -95,6 +97,7 @@ public class Table {
             this.tileId = tileId;
             setPreferredSize(TILE_PANEL_DIMENSION); // utalenie rozmiaru kwadracika
             assignTileColor(); // ustalenie koloru kwadracika
+            assignTilePieceIcon(chessBoard);
             validate(); // metoda JPanel weryfikuje ten kontener i wszystkie jego składniki podrzędne.
         }
 
@@ -103,9 +106,8 @@ public class Table {
             this.removeAll(); // zdejmujemy wszystko co zostało uprzednio umieszczone na panelu (JPanel)
             if(board.getTile(this.tileId).isTileOccupied()) // jeśli pobrany element boarda jest zajęty (jeśli na Tile'u stoi Piece) to rysujemy ten element
             {
-                String pieceIconPath = ""; // zmienna przechowująca lokalną ścieżkę dostępu do obrazka
                 try { // pobieranie obrazka umieszczamy w bloku try-catch
-                    final BufferedImage image = ImageIO.read(new File(pieceIconPath + board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0,1) +
+                    final BufferedImage image = ImageIO.read(new File(defaultPieceImagesPath + board.getTile(this.tileId).getPiece().getPieceAlliance().toString().substring(0,1) +
                             board.getTile(this.tileId).getPiece().toString() + ".gif")); // pobieranie obrazka zapisanego za pomocą tego wzorca, np. "WB.gif" - white bishop
                     add(new JLabel(new ImageIcon(image)));
                 } catch (IOException e) {
