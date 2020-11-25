@@ -1,5 +1,7 @@
 package chess.engine.board;
 
+import java.util.Map;
+
 public class BoardUtils { //klasa pomocnicza do planszy, ma zawierać tylko statyczne metody
 
     //tablice do ograniczania ruchów figór w kolumnach granicznych
@@ -17,6 +19,9 @@ public class BoardUtils { //klasa pomocnicza do planszy, ma zawierać tylko stat
     public static final boolean[] THIRD_RANK = initRow(40);
     public static final boolean[] SECOND_RANK = initRow(48);
     public static final boolean[] FIRST_RANK = initRow(56);
+
+    public static final String[] ALGEBRIC_NOTATION = initalizeAlgebraicNotation(); // do wyświetlania logów
+    public static final Map<String, Integer> POSITION_TO_COORDINATE = initalizePositionToCoordinateMap(); // do zbitych figur
 
     public static final int NUM_TILES = 64; //ilość kwadracików na szachownicy
     public static final int NUM_TILES_PER_ROW = 8; //ilośc kwadracików w kolumnie/wierszu
@@ -49,5 +54,15 @@ public class BoardUtils { //klasa pomocnicza do planszy, ma zawierać tylko stat
     //walidacja koordynatów
     public static boolean isValidTileCoordinate(final int coordinate) {
         return coordinate >= 0 && coordinate < NUM_TILES;
+    }
+
+    // pobiera koordynaty na określonym kwadraciku
+    public static int getCoordinateAtPosition(final String position) {
+        return POSITION_TO_COORDINATE.get(position);
+    }
+
+    // pobiera kwadracik na określonych koordynatach
+    public static int getPositionAtCoordinate(final int coordinate) {
+        return ALGEBRIC_NOTATION[coordinate];
     }
 }

@@ -17,8 +17,12 @@ public class Bishop extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ GOŃCA
 
     private final static int[] CANDIDATE_MOVE_VECTOR_COORDINATES = {-9, -7, 7, 9}; // pozycje planszy na których może pojawić się figura
 
-    public Bishop(Alliance pieceAlliance, int piecePosition) {
-        super(PieceType.BISHOP, piecePosition, pieceAlliance);
+    public Bishop(final Alliance pieceAlliance, final int piecePosition) {
+        super(PieceType.BISHOP, piecePosition, pieceAlliance, true);
+    }
+
+    public Bishop(final Alliance pieceAlliance, final int piecePosition, final boolean isFirstMove) {
+        super(PieceType.BISHOP, piecePosition, pieceAlliance, isFirstMove);
     }
 
     @Override
