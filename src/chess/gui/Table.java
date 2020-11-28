@@ -29,7 +29,11 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 public class Table {
 
     private final JFrame gameFrame; // okno gry
+    private final GameHistoryPanel gameHistoryPanel;
+    private final TakenPiecesPanel takenPiecesPanel;
     private final BoardPanel boardPanel; // panel gry
+    private final MoveLog moveLog;
+
     private Board chessBoard; // szachownica
 
     // zmienne potrzebne do zaznaczania i odznaczania figur na kwadraciku
@@ -55,10 +59,15 @@ public class Table {
         this.gameFrame.setJMenuBar(tableMenuBar); // przypisanie stworzonego menu do okna
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION); // przekazanie zmiennej z rozmiarem do Jframe
         this.chessBoard = Board.createStandardBoard(); // tworzenie szachownicy
+        this.gameHistoryPanel = new GameHistoryPanel();
+        this.takenPiecesPanel = new TakenPiecesPanel();
         this.boardPanel = new BoardPanel(); // dodanie panelu gry do okna gry
+        this.moveLog = new MoveLog();
         this.boardDirection = BoardDirection.NORMAL; // ustawiamy kierunek ustawienia planszy na normalny
         this.highlightLegalMoves = false; // nadajemy false, tak by bazowo nie wyświetlały się podpowiedzi ruchów
+        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
         this.gameFrame.add(this.boardPanel, BorderLayout.CENTER); // wycentrowanie panelu gry
+        this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
         this.gameFrame.setVisible(true); // ustawiasz widoczność
     }
 
@@ -257,7 +266,7 @@ public class Table {
                             if(transition.getMoveStatus().isDone())
                             {
                                 chessBoard = transition.getTransitionBoard();
-                                // TODO: trzeba będzie pomyśleć nad utworzeniem dziennika logów - zapisaywać ruchy w jakiś sposób (?)
+                                moveLog.addMove(move);
                             }
                             sourceTile = null;
                             destinationTile = null;
@@ -267,6 +276,8 @@ public class Table {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
+                                gameHistoryPanel.redo(chessBoard, moveLog);
+                                takenPiecesPanel.redo(moveLog);
                                 boardPanel.drawBoard(chessBoard); // przerysowanie planszy przy zadanym chessBoard
                             }
                         });

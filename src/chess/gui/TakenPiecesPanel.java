@@ -3,7 +3,6 @@ package chess.gui;
 import chess.engine.board.Move;
 import chess.engine.pieces.Piece;
 import com.google.common.primitives.Ints;
-import javafx.scene.layout.Background;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -11,12 +10,13 @@ import javax.swing.border.EtchedBorder;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOError;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
-import static chess.gui.Table.*;
+import static chess.gui.Table.MoveLog;
 
 // klasa z panelem zbitych figur
 public class TakenPiecesPanel extends JPanel {
