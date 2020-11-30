@@ -39,8 +39,7 @@ public abstract class Move {
         return  result;
     }
 
-    //porównywanie ruchów - potrzebne do wykonania ataku, który zadamy
-    //figury posiadają całą Kolekcję ruchów i będziemy sprawdzać, czy ruch, ktory chcemy wykonać istnieje w Kolekcji
+    // sprawdzamy, czy figura istnieje jeszcze na planszy
     @Override
     public boolean equals(final Object other) {
         if(this == other) {
@@ -221,7 +220,7 @@ public abstract class Move {
                 builder.setPiece(piece);
             }
             final Pawn movedPawn = (Pawn)this.movedPiece.movePiece(this); // pobiera nowe koordynaty i tworzy na ich miejscu figurę
-            builder.setPiece(movedPiece); // przypisanie pozycji po wykonanym ruchu
+            builder.setPiece(movedPawn); // przypisanie pozycji po wykonanym ruchu
             builder.setEnPassantPawn(movedPawn);
             builder.setMoveMaker(this.board.currentPlayer().getOpponent().getAlliance());
             return builder.build();
@@ -310,6 +309,11 @@ public abstract class Move {
         @Override
         public Board execute() {
             throw new RuntimeException("Nie da się wykonać ruchu pustego!");
+        }
+
+        @Override
+        public int getCurrentCoordinate() {
+            return -1;
         }
     }
 

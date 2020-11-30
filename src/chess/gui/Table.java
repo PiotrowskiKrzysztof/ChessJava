@@ -29,10 +29,10 @@ import static javax.swing.SwingUtilities.isRightMouseButton;
 public class Table {
 
     private final JFrame gameFrame; // okno gry
-    private final GameHistoryPanel gameHistoryPanel;
-    private final TakenPiecesPanel takenPiecesPanel;
-    private final BoardPanel boardPanel; // panel gry
-    private final MoveLog moveLog;
+    private final GameHistoryPanel gameHistoryPanel; // panel z historią gry
+    private final TakenPiecesPanel takenPiecesPanel; // panel ze zbitymi figurami
+    private final BoardPanel boardPanel; // panel z szachownicą
+    private final MoveLog moveLog; // logi wykonanych ruchów
 
     private Board chessBoard; // szachownica
 
@@ -59,15 +59,15 @@ public class Table {
         this.gameFrame.setJMenuBar(tableMenuBar); // przypisanie stworzonego menu do okna
         this.gameFrame.setSize(OUTER_FRAME_DIMENSION); // przekazanie zmiennej z rozmiarem do Jframe
         this.chessBoard = Board.createStandardBoard(); // tworzenie szachownicy
-        this.gameHistoryPanel = new GameHistoryPanel();
-        this.takenPiecesPanel = new TakenPiecesPanel();
+        this.gameHistoryPanel = new GameHistoryPanel(); // stworzenie panelu z historią gier
+        this.takenPiecesPanel = new TakenPiecesPanel(); // stworzenie panelu ze zbitymi figurami
         this.boardPanel = new BoardPanel(); // dodanie panelu gry do okna gry
         this.moveLog = new MoveLog();
         this.boardDirection = BoardDirection.NORMAL; // ustawiamy kierunek ustawienia planszy na normalny
         this.highlightLegalMoves = false; // nadajemy false, tak by bazowo nie wyświetlały się podpowiedzi ruchów
-        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST);
-        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER); // wycentrowanie panelu gry
-        this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST);
+        this.gameFrame.add(this.takenPiecesPanel, BorderLayout.WEST); // ustawienie panelu ze zbitymi figurami po lewej stronie
+        this.gameFrame.add(this.boardPanel, BorderLayout.CENTER); // wycentrowanie panelu z szachownicą
+        this.gameFrame.add(this.gameHistoryPanel, BorderLayout.EAST); // ustawienie panelu ze zbitymi figurami po prawej stronie
         this.gameFrame.setVisible(true); // ustawiasz widoczność
     }
 
@@ -197,7 +197,7 @@ public class Table {
         }
     }
 
-    // klasa do wyświetlania logów wykonanych ruchów
+    // klasa do przechowywania logów wykonanych ruchów
     public static class MoveLog {
 
         private final List<Move> moves;
@@ -261,12 +261,13 @@ public class Table {
                         } else {
                             // przy drugim kliknięciu ...
                             destinationTile = chessBoard.getTile(tileId);
-                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate());
-                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move);
+                            final Move move = Move.MoveFactory.createMove(chessBoard, sourceTile.getTileCoordinate(), destinationTile.getTileCoordinate()); // tworzymy nowy ruch
+                            final MoveTransition transition = chessBoard.currentPlayer().makeMove(move); // odnosimy sie do obecnej tablicy
+                            // jezeli ruch zostal wykonany
                             if(transition.getMoveStatus().isDone())
                             {
-                                chessBoard = transition.getTransitionBoard();
-                                moveLog.addMove(move);
+                                chessBoard = transition.getTransitionBoard(); // pobieramy zmieniona tablice
+                                moveLog.addMove(move); // dodajemy ruch do logow
                             }
                             sourceTile = null;
                             destinationTile = null;
@@ -276,9 +277,10 @@ public class Table {
                         SwingUtilities.invokeLater(new Runnable() {
                             @Override
                             public void run() {
-                                gameHistoryPanel.redo(chessBoard, moveLog);
-                                takenPiecesPanel.redo(moveLog);
                                 boardPanel.drawBoard(chessBoard); // przerysowanie planszy przy zadanym chessBoard
+                                gameHistoryPanel.redo(chessBoard, moveLog); // aktualizacja panelu z historią ruchów
+                                takenPiecesPanel.redo(moveLog); // aktualizacja panelu ze zbitymi figurami
+
                             }
                         });
                     }
@@ -312,7 +314,7 @@ public class Table {
         public void drawTile(final Board board)
         {
             assignTileColor(); // nadajemy kwadracikowi kolor
-            assignTilePieceIcon(board);
+            assignTilePieceIcon(board); // przydziela kwadracikowi ikonę figury
             highlightLegals(board);
             validate();
             repaint();
