@@ -49,8 +49,8 @@ public class Table {
     private final static Dimension TILE_PANEL_DIMENSION = new Dimension(10, 10); // zmienna z rozmiarem kwadracika
     private static String defaultPieceImagesPath = "art/pieces/"; // początek sieżki do figur
 
-    private final Color lightTileColor = Color.decode("#FFFACD");
-    private final Color darkTileColor = Color.decode("#593E1A");
+    private final Color lightTileColor = Color.decode("#F5F4ED");
+    private final Color darkTileColor = Color.decode("#A1A09A");
 
     public Table() {
         this.gameFrame = new JFrame("JChess");
