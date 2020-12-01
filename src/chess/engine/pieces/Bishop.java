@@ -57,7 +57,7 @@ public class Bishop extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ GOŃCA
                         {
                             // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
                             // tworzymy nowy ruch atakujący, który przujmuje w argumentach szachownice, własną firugę, docelowe koordynaty oraz atakowaną figurę stojącą na docelowych koordynatach
-                            legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }

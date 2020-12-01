@@ -13,6 +13,11 @@ public enum Alliance {  // Używamy enum'a do deklaracji kolorów
         }
 
         @Override
+        public int getOppositeDirection() {
+            return 1;
+        }
+
+        @Override
         public boolean isWhite() {
             return true;  // w tym miejscu jawnie wskazujemy że figura znajduje się na polu białym, analogicznie w przypadku koloru BLACK
         }
@@ -34,6 +39,11 @@ public enum Alliance {  // Używamy enum'a do deklaracji kolorów
         }
 
         @Override
+        public int getOppositeDirection() {
+            return -1;
+        }
+
+        @Override
         public boolean isWhite() {
             return false;
         }
@@ -48,8 +58,9 @@ public enum Alliance {  // Używamy enum'a do deklaracji kolorów
             return blackPlayer;
         }
     };
-    // metoda do pobierania koloru figury
-    public abstract int getDirection();
+
+    public abstract int getDirection(); // metoda do pobierania koloru figury
+    public abstract int getOppositeDirection(); // metoda do ruchu en passant, pobiera przeciwny kierunek figury (1 dla białych, -1 dla czarnych)
     // metody służące do sprawdzenia koloru pola na którym aktualnie ma stać/stoi zadana figura
     public abstract boolean isWhite();
     public abstract boolean isBlack();

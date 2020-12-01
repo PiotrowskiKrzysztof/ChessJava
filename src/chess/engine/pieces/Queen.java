@@ -4,6 +4,7 @@ import chess.engine.Alliance;
 import chess.engine.board.Board;
 import chess.engine.board.BoardUtils;
 import chess.engine.board.Move;
+import chess.engine.board.Move.MajorAttackMove;
 import chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
@@ -56,7 +57,7 @@ public class Queen extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ HETMANA / KR
                         {
                             // ...dodajemy ten ruch do listy możliwych ruchów (atakujących)
                             // tworzymy nowy ruch atakujący, który przujmuje w argumentach szachownice, własną firugę, docelowe koordynaty oraz atakowaną figurę stojącą na docelowych koordynatach
-                            legalMoves.add(new Move.AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
+                            legalMoves.add(new MajorAttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                         }
                         break;
                     }

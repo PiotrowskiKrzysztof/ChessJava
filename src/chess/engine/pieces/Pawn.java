@@ -39,8 +39,7 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
 
             // jeżeli pionek jest przesunięty o 8 pól oraz kwadracik szachownicy (na który chcemy iść) NIE jest zajęty (ruch nieatakujący)
             if(currentCandidateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-                // tutaj będzie trzeba zrobić specjalny ruch dla pionka
-                legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
+                legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
             }
             // odtworzenie "skoku" pionu z pozycji startowej, sprawdzamy czy jest to pierwszy wykonywany ruch na planszy, czy figury w odpowiednich kolorach znajdują się w odpowiadających im rzędach (ruch nieatakujący)
             else if(currentCandidateOffset == 16 && this.isFirstMove() && ((BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) || (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite())))
@@ -63,10 +62,19 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
                     {
                         legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
                     }
+                 // jeżeli tablica posiada pionek, na którym może być wykonany ruch en passant (taki, który wykonał podwójny skok)
+                } else if(board.getEnPassantPawn() != null) {
+                    // jeżeli pozycja pionka na którym może być wykonany ruch en passant równa się pozycji zaznaczonej figury + odwrotnemu kierunkowi figury
+                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition + (this.pieceAlliance.getOppositeDirection()))) {
+                        final Piece pieceOnCandidate = board.getEnPassantPawn();
+                        // jeżeli zaznaczona figura jest innego koloru niż figura, którą chcemy zbić ...
+                        if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+                            // ... dodajemy atak en passant do legalnych ruchów
+                            legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        }
+                    }
                 }
-
             }
-
             else if(currentCandidateOffset == 9 && !((BoardUtils.FIRST_COLUMN[this.piecePosition] && this.pieceAlliance.isWhite() || (BoardUtils.EIGHTH_COLUMN[this.piecePosition] && this.pieceAlliance.isBlack()))))
             {
                 if(board.getTile(candidateDestinationCoordinate).isTileOccupied())
@@ -75,6 +83,17 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
                     if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance())
                     {
                         legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                    }
+                // jeżeli tablica posiada pionek, na którym może być wykonany ruch en passant (taki, który wykonał podwójny skok)
+                } else if(board.getEnPassantPawn() != null) {
+                    // jeżeli pozycja pionka na którym może być wykonany ruch en passant równa się pozycji zaznaczonej figury - odwrotnemu kierunkowi figury
+                    if(board.getEnPassantPawn().getPiecePosition() == (this.piecePosition - (this.pieceAlliance.getOppositeDirection()))) {
+                        final Piece pieceOnCandidate = board.getEnPassantPawn();
+                        // jeżeli zaznaczona figura jest innego koloru niż figura, którą chcemy zbić ...
+                        if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance()) {
+                            // ... dodajemy atak en passant do legalnych ruchów
+                            legalMoves.add(new PawnEnPassantAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        }
                     }
                 }
             }
