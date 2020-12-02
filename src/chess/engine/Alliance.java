@@ -1,5 +1,6 @@
 package chess.engine;
 
+import chess.engine.board.BoardUtils;
 import chess.engine.player.BlackPlayer;
 import chess.engine.player.Player;
 import chess.engine.player.WhitePlayer;
@@ -25,6 +26,11 @@ public enum Alliance {  // Używamy enum'a do deklaracji kolorów
         @Override
         public boolean isBlack() {
             return false;
+        }
+
+        @Override
+        public boolean isPawnPromotionSquare(int position) {
+            return BoardUtils.EIGHTH_RANK[position];
         }
 
         @Override
@@ -54,6 +60,11 @@ public enum Alliance {  // Używamy enum'a do deklaracji kolorów
         }
 
         @Override
+        public boolean isPawnPromotionSquare(int position) {
+            return BoardUtils.FIRST_RANK[position];
+        }
+
+        @Override
         public Player choosePlayer(final WhitePlayer whitePlayer, final BlackPlayer blackPlayer) {
             return blackPlayer;
         }
@@ -64,6 +75,7 @@ public enum Alliance {  // Używamy enum'a do deklaracji kolorów
     // metody służące do sprawdzenia koloru pola na którym aktualnie ma stać/stoi zadana figura
     public abstract boolean isWhite();
     public abstract boolean isBlack();
+    public abstract boolean isPawnPromotionSquare(int position);
 
     public abstract Player choosePlayer(WhitePlayer whitePlayer, BlackPlayer blackPlayer);
 }

@@ -39,7 +39,15 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
 
             // jeżeli pionek jest przesunięty o 8 pól oraz kwadracik szachownicy (na który chcemy iść) NIE jest zajęty (ruch nieatakujący)
             if(currentCandidateOffset == 8 && !board.getTile(candidateDestinationCoordinate).isTileOccupied()) {
-                legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
+                // dotyczy ruchu - pawn promotion
+                if(this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate))
+                {   //TODO: do korekty! wstępny zarys
+                    legalMoves.add(new PawnPromotion(new PawnMove(board, this, candidateDestinationCoordinate)));
+                }
+                else
+                {
+                    legalMoves.add(new PawnMove(board, this, candidateDestinationCoordinate));
+                }
             }
             // odtworzenie "skoku" pionu z pozycji startowej, sprawdzamy czy jest to pierwszy wykonywany ruch na planszy, czy figury w odpowiednich kolorach znajdują się w odpowiadających im rzędach (ruch nieatakujący)
             else if(currentCandidateOffset == 16 && this.isFirstMove() && ((BoardUtils.SEVENTH_RANK[this.piecePosition] && this.getPieceAlliance().isBlack()) || (BoardUtils.SECOND_RANK[this.piecePosition] && this.getPieceAlliance().isWhite())))
@@ -60,7 +68,13 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
                     final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
                     if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance())
                     {
-                        legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        if(this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate))
+                        {   //TODO: do korekty! wstępny zarys
+                            legalMoves.add(new PawnPromotion(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
+                        }
+                        else {
+                            legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        }
                     }
                  // jeżeli tablica posiada pionek, na którym może być wykonany ruch en passant (taki, który wykonał podwójny skok)
                 } else if(board.getEnPassantPawn() != null) {
@@ -82,7 +96,15 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
                     final Piece pieceOnCandidate = board.getTile(candidateDestinationCoordinate).getPiece();
                     if(this.pieceAlliance != pieceOnCandidate.getPieceAlliance())
                     {
-                        legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        //TODO: do korekty! wstępny zarys
+                        if(this.pieceAlliance.isPawnPromotionSquare(candidateDestinationCoordinate))
+                        {
+                            legalMoves.add(new PawnPromotion(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate)));
+                        }
+                        else
+                        {
+                            legalMoves.add(new PawnAttackMove(board, this, candidateDestinationCoordinate, pieceOnCandidate));
+                        }
                     }
                 // jeżeli tablica posiada pionek, na którym może być wykonany ruch en passant (taki, który wykonał podwójny skok)
                 } else if(board.getEnPassantPawn() != null) {
@@ -98,7 +120,6 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
                 }
             }
         }
-
         return ImmutableList.copyOf(legalMoves);
     }
 
@@ -111,5 +132,10 @@ public class Pawn extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ PIONU
     @Override
     public String toString() {
         return PieceType.PAWN.toString();
+    }
+
+    public Piece getPromotionPiece()
+    {
+        return new Queen(this.pieceAlliance, this.piecePosition, false);
     }
 }
