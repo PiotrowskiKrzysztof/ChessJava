@@ -20,7 +20,40 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
 
     @Override
     public Move execute(Board board, int depth) { // metoda zwracająca najlepszy możliwy ruch na planszy
-        return null;
+        final long startTime = System.currentTimeMillis(); // mierzymy czas w milisekundach
+
+        Move bestMove = null; // TODO: na razie null, do określenia czym jest najlepszy ruch
+
+        int highestSeenValue = Integer.MIN_VALUE; // przypisujemy do zmiennej największą możliwą liczbę ujemną
+        int lowestSeenValue = Integer.MAX_VALUE; // przypisujemy do zmiennej największą możliwą liczbę dodatnią
+        int currentValue;
+
+        System.out.println(board.currentPlayer() + " zastanawia się nad ruchem na głębokości " + depth);
+
+        int numMoves = board.currentPlayer().getLegalMoves().size();
+
+        for(final Move move : board.currentPlayer().getLegalMoves())
+        {
+            final MoveTransition moveTransition = board.currentPlayer().makeMove(move);
+            if(moveTransition.getMoveStatus().isDone())
+            {
+                currentValue = board.currentPlayer().getAlliance().isWhite() ?
+                        min(moveTransition.getTransitionBoard(), depth - 1) : max(moveTransition.getTransitionBoard(), depth - 1);
+
+                if(board.currentPlayer().getAlliance().isWhite() && currentValue >= highestSeenValue)
+                {
+                    highestSeenValue = currentValue;
+                    bestMove = move;
+                }
+                else if(board.currentPlayer().getAlliance().isBlack() && currentValue <= lowestSeenValue)
+                {
+                    lowestSeenValue = currentValue;
+                    bestMove = move;
+                }
+            }
+        }
+        final long executionTime = System.currentTimeMillis() - startTime;
+        return bestMove;
     }
 
     // funkcje pomocnicze dla execute() - min i max
@@ -61,7 +94,7 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
             final MoveTransition moveTransition = board.currentPlayer().makeMove(move); // symulacja wykonywania ruchu celem wyliczenia
             if(moveTransition.getMoveStatus().isDone())
             {
-                final int currentValue = max(moveTransition.getTransitionBoard(), depth - 1);
+                final int currentValue = min(moveTransition.getTransitionBoard(), depth - 1);
                 if(currentValue >= highestSeenValue) // porównanie wartości w drzewie ruchów
                 {
                     highestSeenValue = currentValue;
