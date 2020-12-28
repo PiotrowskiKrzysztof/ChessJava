@@ -83,7 +83,7 @@ public class TakenPiecesPanel extends JPanel {
                 final ImageIcon icon = new ImageIcon(image);
                 final JLabel imageLabel = new JLabel(new ImageIcon(icon.getImage()
                         .getScaledInstance(icon.getIconWidth() - 15, icon.getIconWidth() - 15, Image.SCALE_SMOOTH)));
-                this.southPanel.add(imageLabel);
+                this.northPanel.add(imageLabel);
             } catch(final IOException e) { // IOException to wyjątek do przechwytywania nieudanej próby odczytu
                 e.printStackTrace();
             }

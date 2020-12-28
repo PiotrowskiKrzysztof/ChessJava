@@ -10,7 +10,7 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
 
     public MiniMax()
     {
-        this.boardEvaluator = null; // TODO: ustawiam na null dla zarysu! Do poprawki
+        this.boardEvaluator = new StandardBoardEvaluator();
     }
 
     @Override
