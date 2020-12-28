@@ -7,10 +7,12 @@ import chess.engine.player.MoveTransition;
 public class MiniMax implements MoveStrategy { // klasa implementująca algorytm minimax
 
     private final BoardEvaluator boardEvaluator;
+    private final int searchDepth;
 
-    public MiniMax()
+    public MiniMax(final int searchDepth)
     {
         this.boardEvaluator = new StandardBoardEvaluator();
+        this.searchDepth = searchDepth;
     }
 
     @Override
@@ -19,7 +21,7 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
     }
 
     @Override
-    public Move execute(Board board, int depth) { // metoda zwracająca najlepszy możliwy ruch na planszy
+    public Move execute(Board board) { // metoda zwracająca najlepszy możliwy ruch na planszy
         final long startTime = System.currentTimeMillis(); // mierzymy czas w milisekundach
 
         Move bestMove = null; // TODO: na razie null, do określenia czym jest najlepszy ruch
@@ -28,7 +30,7 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
         int lowestSeenValue = Integer.MAX_VALUE; // przypisujemy do zmiennej największą możliwą liczbę dodatnią
         int currentValue;
 
-        System.out.println(board.currentPlayer() + " zastanawia się nad ruchem na głębokości " + depth);
+        System.out.println(board.currentPlayer() + " zastanawia się nad ruchem na głębokości " + this.searchDepth);
 
         int numMoves = board.currentPlayer().getLegalMoves().size();
 
@@ -38,7 +40,7 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
             if(moveTransition.getMoveStatus().isDone())
             {
                 currentValue = board.currentPlayer().getAlliance().isWhite() ?
-                        min(moveTransition.getTransitionBoard(), depth - 1) : max(moveTransition.getTransitionBoard(), depth - 1);
+                        min(moveTransition.getTransitionBoard(), this.searchDepth - 1) : max(moveTransition.getTransitionBoard(), this.searchDepth - 1);
 
                 if(board.currentPlayer().getAlliance().isWhite() && currentValue >= highestSeenValue)
                 {
@@ -60,7 +62,7 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
     // TODO: rekurencja! pilnować warunku stopu
     public int min(final Board board, final int depth) // symulacja procesu minimalizacji
     {
-        if(depth == 0 /* lub game over*/)
+        if(depth == 0 || isEndGameScenario(board))
         {
             return this.boardEvaluator.evaluate(board, depth);
         }
@@ -81,9 +83,14 @@ public class MiniMax implements MoveStrategy { // klasa implementująca algorytm
         return lowestSeenValue; // zwracamy najniższą możliwą wartość na zadanym poziomie drzewa
     }
 
+    public static boolean isEndGameScenario(final Board board)
+    {
+        return board.currentPlayer().isInCheckMate() || board.currentPlayer().isInStaleMate();
+    }
+
     public int max(final Board board, final int depth)
     {
-        if(depth == 0 /* lub game over*/)
+        if(depth == 0 || isEndGameScenario(board))
         {
             return this.boardEvaluator.evaluate(board, depth);
         }
