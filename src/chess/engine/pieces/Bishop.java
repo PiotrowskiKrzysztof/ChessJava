@@ -80,11 +80,11 @@ public class Bishop extends Piece { // KLASA REPREZENTUJĄCA FIGURĘ GOŃCA
 
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset)
     {
-        return BoardUtils.FIRST_COLUMN[currentPosition] && candidateOffset == -9 || candidateOffset == 7;
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -9 || (candidateOffset == 7));
     }
 
     private static boolean isEightColumnExclusion(final int currentPosition, final int candidateOffset)
     {
-        return BoardUtils.EIGHTH_COLUMN[currentPosition] && candidateOffset == -7 || candidateOffset == 9;
+        return BoardUtils.EIGHTH_COLUMN[currentPosition] && ((candidateOffset == -7) || (candidateOffset == 9));
     }
 }

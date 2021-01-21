@@ -180,7 +180,6 @@ public class Board {
 
         public Builder() {
             this.boardConfig = new HashMap<>();
-
         }
 
         //ustawienie figury
